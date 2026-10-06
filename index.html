@@ -8,6 +8,10 @@
 <style>
 body{margin:0}
 [hidden]{display:none!important}
+.bl .group.skipped,.bl .item.skipped{opacity:.5}
+.bl .group.skipped h3,.bl .item.skipped .stim{text-decoration:line-through}
+.bl .group.skipped .fields,.bl .item.skipped .fields{pointer-events:none}
+.bl .skipnote{padding:8px 16px;font-size:13px;font-weight:600;color:var(--no);background:var(--no-tint);border-bottom:1px solid var(--line)}
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap');
 
 /* Layout: one working column — sticky status bar, section chips, one section at a time; item rows built for thumbs on a tablet beside the child */
@@ -367,7 +371,11 @@ const SECTIONS = [
     items: mk('B2', [['مدرسة','أشر إلى: م (بداية)'],['مدرسة','أشر إلى: ر (وسط)'],['مدرسة','أشر إلى: ة (نهاية)'],['كتاب','أشر إلى: ت (وسط)'],['سيارة','أشر إلى: س (بداية)']]) },
   { id:'B3', title:'٣. الحروف المتشابهة بصريًا', how:'اعرض المجموعة واسأله عن الفرق، أو عن اسم كل حرف فيها.', show:true,
     fields:[{k:'mark',t:'seg',o:DIST},F_SAID,F_RC],
-    items: mk('B3', [['ب ت ث'],['ج ح خ'],['د ذ'],['س ش'],['ف ق']]) }
+    items: mk('B3', [['ب ت ث'],['ج ح خ'],['د ذ'],['س ش'],['ف ق']]) },
+  { id:'B4', title:'٤. فحص نطق السين (جديد)', how:'«قل ورايا: سيف». يردّد الكلمة. اكتبي: هل خرجت السين سينًا، أم صارت شينًا؟ لا تصحّحي له.', fields:[{k:'mark',t:'seg',o:[{v:'ok',l:'نطقها صح'},{v:'no',l:'صارت ش / غير واضحة'},{v:'na',l:'لم يُطبَّق'}]},F_SAID],
+    items: mk('B4', [['سيف','السين في البداية'],['شمس','فيها شين وسين'],['سمك','السين في البداية'],['شجرة','الشين في البداية']]) },
+  { id:'B5', title:'٥. سماع الحركات (جديد — شفهي)', how:'بصوتك فقط، بدون كتابة. انطقي المقطعين بوضوح واسأليه: «نفس الصوت ولا مختلف؟». ثم في آخر ثلاثة: «قل ورايا» ويردّد.', fields:[F_MARK,F_SAID],
+    items: mk('B5', [['بَ … بُ','مختلف'],['بُ … بِ','مختلف'],['مَ … مَ','نفس الصوت'],['سِ … سَ','مختلف'],['ردّد: بُ','بُ'],['ردّد: مِ','مِ'],['ردّد: لُ','لُ']]) }
   ]},
 { id:'C', tab:'ج. فك الرموز', title:'فك الرموز', eyebrow:'القسم ج — ٨ مراحل',
   lead:'من أبسط مقطع إلى الكلمات الأطول. إن فشل بوضوح في مرحلة فلا تنتقل للتي بعدها.',
@@ -375,23 +383,23 @@ const SECTIONS = [
   groups:[
   { id:'C1', title:'المرحلة ١ — حرف + حركة قصيرة', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C1', [['بَ'],['سُ'],['مِ'],['تَ'],['لُ']]) },
   { id:'C2', title:'المرحلة ٢ — مقاطع مفتوحة بحركات قصيرة فقط', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C2', [['كَتَبَ'],['لَعِبَ'],['رَسَمَ'],['فَهِمَ']]) },
-  { id:'C3', title:'المرحلة ٣ — مقطع مغلق بساكن في آخر الكلمة', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C3', [['قَلَم'],['كَتِف'],['وَلَد']]) },
-  { id:'C4', title:'المرحلة ٤ — حروف المد الطويلة', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C4', [['دَار'],['نُور'],['تِين'],['كَبِير']]) },
-  { id:'C5', title:'المرحلة ٥ — السكون في وسط الكلمة', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C5', [['مَدْرَسَة'],['جَدْوَل'],['يَكْتُب']]) },
-  { id:'C6', title:'المرحلة ٦ — الشدّة', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C6', [['مُعَلِّم'],['سَيَّارَة'],['حَمَّام']]) },
-  { id:'C7', title:'المرحلة ٧ — كلمات متعددة المقاطع', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C7', [['مُغَامَرَة'],['مُبَارَاة'],['اِسْتِكْشَاف']]) },
-  { id:'C8', title:'المرحلة ٨ — عناصر غير مألوفة (المستوى ١)', how:'قل: «هذي كلمة مو حقيقية، بس أبي تحاول تقرأها بالحروف». اكتب قراءته الصوتية كما نطقها. إن بدا أنه يعرفها ككلمة، اكتب ذلك.', show:true, fields:[F_MARK,F_SAID,F_RC],
+  { id:'C3', skip:'لا تطبّقيه الآن — المراحل التالية تعتمد على الحركات والدمج، وهو ما زال يتعثّر فيهما، فستُحبطه بلا معلومة جديدة.', title:'المرحلة ٣ — مقطع مغلق بساكن في آخر الكلمة', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C3', [['قَلَم'],['كَتِف'],['وَلَد']]) },
+  { id:'C4', skip:'لا تطبّقيه الآن — المراحل التالية تعتمد على الحركات والدمج، وهو ما زال يتعثّر فيهما، فستُحبطه بلا معلومة جديدة.', title:'المرحلة ٤ — حروف المد الطويلة', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C4', [['دَار'],['نُور'],['تِين'],['كَبِير']]) },
+  { id:'C5', skip:'لا تطبّقيه الآن — المراحل التالية تعتمد على الحركات والدمج، وهو ما زال يتعثّر فيهما، فستُحبطه بلا معلومة جديدة.', title:'المرحلة ٥ — السكون في وسط الكلمة', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C5', [['مَدْرَسَة'],['جَدْوَل'],['يَكْتُب']]) },
+  { id:'C6', skip:'لا تطبّقيه الآن — المراحل التالية تعتمد على الحركات والدمج، وهو ما زال يتعثّر فيهما، فستُحبطه بلا معلومة جديدة.', title:'المرحلة ٦ — الشدّة', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C6', [['مُعَلِّم'],['سَيَّارَة'],['حَمَّام']]) },
+  { id:'C7', skip:'لا تطبّقيه الآن — المراحل التالية تعتمد على الحركات والدمج، وهو ما زال يتعثّر فيهما، فستُحبطه بلا معلومة جديدة.', title:'المرحلة ٧ — كلمات متعددة المقاطع', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('C7', [['مُغَامَرَة'],['مُبَارَاة'],['اِسْتِكْشَاف']]) },
+  { id:'C8', skip:'لا تطبّقيه الآن — المراحل التالية تعتمد على الحركات والدمج، وهو ما زال يتعثّر فيهما، فستُحبطه بلا معلومة جديدة.', title:'المرحلة ٨ — عناصر غير مألوفة (المستوى ١)', how:'قل: «هذي كلمة مو حقيقية، بس أبي تحاول تقرأها بالحروف». اكتب قراءته الصوتية كما نطقها. إن بدا أنه يعرفها ككلمة، اكتب ذلك.', show:true, fields:[F_MARK,F_SAID,F_RC],
     items: mk('C8', [['فَتَمَك'],['سَنَتَب'],['دَكَرَش']]) },
-  { id:'C9', title:'المرحلة ٨ — عناصر غير مألوفة (المستوى ٢)', how:'مدّ وسكون وشدّة. نفس التعليمات.', show:true, fields:[F_MARK,F_SAID,F_RC],
+  { id:'C9', skip:'لا تطبّقيه الآن — المراحل التالية تعتمد على الحركات والدمج، وهو ما زال يتعثّر فيهما، فستُحبطه بلا معلومة جديدة.', title:'المرحلة ٨ — عناصر غير مألوفة (المستوى ٢)', how:'مدّ وسكون وشدّة. نفس التعليمات.', show:true, fields:[F_MARK,F_SAID,F_RC],
     items: mk('C9', [['دُرَاف'],['جَفْرُوت'],['دَقَّاش']]) }
   ]},
 { id:'D', tab:'د. قراءة الكلمات', title:'قراءة الكلمات', eyebrow:'القسم د',
   lead:'ثلاث قوائم بكلمات مختلفة: أثر التشكيل يُقارن بين (أ) و(ب)، وأثر الشيوع في (ج). المقارنة وصفية تقريبية.',
   fid:'<b>الطريقة:</b> نفس طريقة القسم ج. لا تقل له إن قائمة ما «أصعب».',
   groups:[
-  { id:'D1', title:'قائمة أ — شائعة، مشكّلة بالكامل', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('D1', [['كُرَة'],['لَاعِب'],['مُدَرِّب'],['مَلْعَب']]) },
-  { id:'D2', title:'قائمة ب — كلمات أخرى، تشكيل مخفّض', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('D2', [['شاحنة'],['محرك'],['هاتف'],['طريق']]) },
-  { id:'D3', title:'قائمة ج — أقل شيوعًا، مشكّلة بالكامل', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('D3', [['مِقْوَد'],['إِطَار'],['مُنْتَخَب']]) }
+  { id:'D1', title:'قائمة أ — شائعة، مشكّلة بالكامل', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('D1', [['كُرَة'],['لَاعِب'],['مُدَرِّب'],['مَلْعَب']]).map((x,i) => i > 1 ? Object.assign(x,{skip:true}) : x) },
+  { id:'D2', skip:'لا تطبّقيها الآن — يكفي أول كلمتين من القائمة أ.', title:'قائمة ب — كلمات أخرى، تشكيل مخفّض', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('D2', [['شاحنة'],['محرك'],['هاتف'],['طريق']]) },
+  { id:'D3', skip:'لا تطبّقيها الآن — يكفي أول كلمتين من القائمة أ.', title:'قائمة ج — أقل شيوعًا، مشكّلة بالكامل', show:true, fields:[F_MARK,F_SAID,F_RC], items: mk('D3', [['مِقْوَد'],['إِطَار'],['مُنْتَخَب']]) }
   ]},
 { id:'E', tab:'هـ. الإملاء', title:'الإملاء', eyebrow:'القسم هـ',
   lead:'تملي عليه ويكتب على ورقة. لا تعرض الكلمة.',
@@ -406,7 +414,7 @@ const SECTIONS = [
   fid:'<b>الطريقة:</b> يقرأ الفقرة كاملة بصوت عالٍ، ثم تسأل أسئلة الفهم بعد انتهائه. لا تقرأها له قبله ولا تشرح كلمة.',
   gate:true,
   groups:[
-  { id:'F1', title:'الفقرة ١ — كرة القدم (٢٠ كلمة)', show:true,
+  { id:'F1', skip:'لا تطبّقيه الآن — شرط القراءة الأساسية لم يتحقق.', title:'الفقرة ١ — كرة القدم (٢٠ كلمة)', show:true,
     passage:'سَامِي وَلَدٌ يُحِبُّ كُرَةَ القَدَمِ. يَلْعَبُ مَعَ أَصْحَابِهِ كُلَّ يَوْمِ خَمِيسٍ. يَرْكُضُ سَامِي بِسُرْعَةٍ فِي المَلْعَبِ. سَجَّلَ هَدَفًا وَفَرِحَ كَثِيرًا.',
     items:[
       {id:'F1-acc', stim:'الكلمات المقروءة صحيحة', small:true, fields:[{k:'n',t:'num',max:20,suffix:'من ٢٠'}]},
@@ -414,9 +422,9 @@ const SECTIONS = [
       {id:'F1-sc',  stim:'صحّح أخطاءه بنفسه؟', small:true, fields:[{k:'v',t:'seg',o:YNP}]},
       {id:'F1-err', stim:'الكلمات التي أخطأ فيها', small:true, fields:[{k:'said',t:'text',ph:'مثال: قرأ (يلعب) = يلعبون'}]}
     ]},
-  { id:'F1q', title:'أسئلة الفهم — الفقرة ١', fields:[F_MARK,F_SAID],
+  { id:'F1q', skip:'لا تطبّقيه الآن — شرط القراءة الأساسية لم يتحقق.', title:'أسئلة الفهم — الفقرة ١', fields:[F_MARK,F_SAID],
     items: mk('F1q', [['ماذا يحب سامي؟','كرة القدم'],['مع من يلعب سامي؟','مع أصحابه'],['في أي يوم يلعب؟','يوم الخميس'],['ماذا فعل بعد أن ركض؟','سجّل هدفًا']]).map(x => Object.assign(x,{small:true})) },
-  { id:'F2', title:'الفقرة ٢ — رحلة الصحراء (٣٠ كلمة)', show:true,
+  { id:'F2', skip:'لا تطبّقيه الآن — شرط القراءة الأساسية لم يتحقق.', title:'الفقرة ٢ — رحلة الصحراء (٣٠ كلمة)', show:true,
     passage:'سَافَرَ خَالِدٌ مَعَ أُسْرَتِهِ إِلَى الصَّحْرَاءِ فِي عُطْلَةِ نِهَايَةِ الأُسْبُوعِ. رَكِبُوا سَيَّارَةً كَبِيرَةً وَحَمَلُوا خَيْمَةً وَطَعَامًا. عِنْدَ الغُرُوبِ، أَشْعَلُوا نَارًا وَجَلَسُوا حَوْلَهَا يَتَحَدَّثُونَ. اسْتَمْتَعَ خَالِدٌ كَثِيرًا بِرُؤْيَةِ النُّجُومِ فِي السَّمَاءِ.',
     items:[
       {id:'F2-acc', stim:'الكلمات المقروءة صحيحة', small:true, fields:[{k:'n',t:'num',max:30,suffix:'من ٣٠'}]},
@@ -424,7 +432,7 @@ const SECTIONS = [
       {id:'F2-sc',  stim:'صحّح أخطاءه بنفسه؟', small:true, fields:[{k:'v',t:'seg',o:YNP}]},
       {id:'F2-err', stim:'الكلمات التي أخطأ فيها', small:true, fields:[{k:'said',t:'text',ph:'الكلمة = ما قاله'}]}
     ]},
-  { id:'F2q', title:'أسئلة الفهم — الفقرة ٢', fields:[F_MARK,F_SAID],
+  { id:'F2q', skip:'لا تطبّقيه الآن — شرط القراءة الأساسية لم يتحقق.', title:'أسئلة الفهم — الفقرة ٢', fields:[F_MARK,F_SAID],
     items: mk('F2q', [['إلى أين سافر خالد؟','الصحراء'],['بماذا ركبوا؟','سيارة كبيرة'],['ماذا فعلوا عند الغروب؟','أشعلوا نارًا وجلسوا حولها'],['بماذا استمتع خالد؟','برؤية النجوم']]).map(x => Object.assign(x,{small:true})) }
   ]},
 { id:'G', tab:'ز. اللغة الشفهية', title:'اللغة الشفهية', eyebrow:'القسم ز — ملاحظة لا تشخيص',
@@ -592,7 +600,7 @@ function itemFilled(id){
 }
 function sectionCount(sec){
   let done = 0, total = 0;
-  sec.groups.forEach(g => g.items.forEach(it => { total++; if(itemFilled(it.id)) done++; }));
+  sec.groups.forEach(g => { if(g.skip) return; g.items.forEach(it => { if(it.skip) return; total++; if(itemFilled(it.id)) done++; }); });
   return [done, total];
 }
 function groupScore(g){
@@ -649,17 +657,19 @@ function renderSection(sec){
   if(sec.gate) h += `<div class="note gold" id="gateInfo">${gateText()}</div>`;
   if(!currentSid) h += `<div class="note warn"><b>لا توجد جلسة حالية.</b> افتح «الجلسات» وابدأ جلسة، حتى نعرف في أي جلسة سُجّلت كل إجابة.</div>`;
   sec.groups.forEach(g => {
-    h += `<section class="group"><header><h3>${esc(g.title)}</h3><span class="gscore" data-gscore="${g.id}"></span></header>`;
+    h += `<section class="group${g.skip ? ' skipped' : ''}"><header><h3>${esc(g.title)}</h3><span class="gscore" data-gscore="${g.id}"></span></header>`;
+    if(g.skip) h += `<div class="skipnote">⛔ ${esc(g.skip)}</div>`;
     if(g.how) h += `<div class="how">${esc(g.how)}</div>`;
     if(g.passage) h += `<div class="passage">${esc(g.passage)}<div><button type="button" class="showbtn" data-show="${esc(g.passage)}" data-long="1">اعرض الفقرة للطفل</button></div></div>`;
     g.items.forEach(it => {
       const fields = it.fields || g.fields || [];
       const path = 'responses/' + it.id;
-      h += `<div class="item"><div class="stimbox"><span class="stim ${it.small ? 'small' : ''}">${esc(it.stim)}</span>${it.key ? `<span class="key">${esc(it.key)}</span>` : ''}${g.show && !it.small ? `<button type="button" class="showbtn" data-show="${esc(it.show || it.stim)}">اعرض للطفل</button>` : ''}</div>`;
+      const off = (g.skip || it.skip) ? 'disabled' : '';
+      h += `<div class="item${it.skip ? ' skipped' : ''}"><div class="stimbox"><span class="stim ${it.small ? 'small' : ''}">${esc(it.stim)}</span>${it.key ? `<span class="key">${esc(it.key)}</span>` : ''}${g.show && !it.small ? `<button type="button" class="showbtn" data-show="${esc(it.show || it.stim)}">اعرض للطفل</button>` : ''}</div>`;
       h += `<div class="fields">`;
-      const segs = fields.filter(f => f.t === 'seg' || f.t === 'num').map(f => fieldHTML(path, f)).join('');
+      const segs = fields.filter(f => f.t === 'seg' || f.t === 'num').map(f => fieldHTML(path, f, off)).join('');
       if(segs) h += `<div class="row">${segs}</div>`;
-      fields.filter(f => f.t !== 'seg' && f.t !== 'num').forEach(f => { h += fieldHTML(path, f); });
+      fields.filter(f => f.t !== 'seg' && f.t !== 'num').forEach(f => { h += fieldHTML(path, f, off); });
       h += `</div></div>`;
     });
     h += `</section>`;
