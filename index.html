@@ -314,7 +314,7 @@ const GUIDE = {
 }
 
 
-const MARKUP = "<div class=\"wrap\">\n  <div class=\"bar\">\n    <div class=\"bar-top\">\n      <h1>سجل التقييم الأساسي</h1>\n      <button type=\"button\" class=\"sess-chip none\" id=\"sessChip\">لا توجد جلسة حالية</button>\n      <span class=\"pill\" id=\"saveState\">جارٍ الاتصال…</span>\n    </div>\n    <nav class=\"tabs\" id=\"tabs\" aria-label=\"أقسام التقييم\"></nav>\n  </div>\n  <div id=\"dbBanner\" class=\"banner\" hidden></div>\n  <main id=\"main\"></main>\n</div>\n<div id=\"stage\" hidden role=\"dialog\" aria-label=\"عرض للطفل\"><button type=\"button\" class=\"close\">إغلاق ✕</button><div class=\"big\" id=\"stageText\"></div></div>"
+const MARKUP = "<div class=\"wrap\">\n  <div class=\"bar\">\n    <div class=\"bar-top\">\n      <h1>سجل التقييم الأساسي</h1>\n      <a href=\"plan.html\" style=\"font-size:13px;color:var(--accent)\">خطة المرحلة الثانية ←</a>\n      <button type=\"button\" class=\"sess-chip none\" id=\"sessChip\">لا توجد جلسة حالية</button>\n      <span class=\"pill\" id=\"saveState\">جارٍ الاتصال…</span>\n    </div>\n    <nav class=\"tabs\" id=\"tabs\" aria-label=\"أقسام التقييم\"></nav>\n  </div>\n  <div id=\"dbBanner\" class=\"banner\" hidden></div>\n  <main id=\"main\"></main>\n</div>\n<div id=\"stage\" hidden role=\"dialog\" aria-label=\"عرض للطفل\"><button type=\"button\" class=\"close\">إغلاق ✕</button><div class=\"big\" id=\"stageText\"></div></div>"
 
 function start(root, client, api){
 if(root.dataset.started) return; root.dataset.started = '1';
