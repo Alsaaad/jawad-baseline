@@ -56,7 +56,10 @@ td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:right}
 .res{font-variant-numeric:tabular-nums;font-weight:600}
 .dots{display:flex;gap:6px;justify-content:center;margin:6px 0}
 .dots i{width:12px;height:12px;border-radius:50%;background:var(--sunk);display:block}
-.dots i.ok{background:var(--ok)} .dots i.no{background:var(--no)} .dots i.cur{outline:2px solid var(--accent)}
+.dots i.ok,.dots i.no{background:var(--muted)}
+body.child .bar{display:none}
+body.child .wrap{max-width:none}
+body.child #main .big{font-size:min(32vw,260px);min-height:90vh;display:flex;align-items:center;justify-content:center} .dots i.cur{outline:2px solid var(--accent)}
 #stage{position:fixed;inset:0;background:var(--surface);z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center}
 #stage .close{position:absolute;top:12px;left:12px}
 #stage .nav{display:flex;gap:10px;position:absolute;bottom:20px}
@@ -137,14 +140,18 @@ function setSave(s){ const el=$('#save'); el.className='pill'+(s==='ok'?' ok':''
 function pick4(arr){ const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a.slice(0,4); }
 
 function stage(list, i){
-  let k = i||0; const show = () => { $('#stageText').textContent = list[k]; $('#stPrev').disabled = k===0; $('#stNext').disabled = k===list.length-1; };
+  let k = i||0; const show = () => { $('#stageText').textContent = list[k]; live(list[k]); $('#stPrev').disabled = k===0; $('#stNext').disabled = k===list.length-1; };
   $('#stage').hidden = false; show();
   $('#stPrev').onclick = () => { if(k>0){k--;show();} };
   $('#stNext').onclick = () => { if(k<list.length-1){k++;show();} };
 }
-$('#stage .close').onclick = () => { $('#stage').hidden = true; };
+$('#stage .close').onclick = () => { $('#stage').hidden = true; live(''); };
+const CHILD = location.hash === '#child';
+if(CHILD) document.body.classList.add('child');
+function live(t){ if(put && !CHILD) put('plan/live', {t, at: Date.now()}).catch(()=>{}); }
 
 function render(){
+  if(CHILD){ const t=(recs['plan/live']||{}).t||''; $('#main').innerHTML = `<div class="big">${esc(t)||'<span style="font-size:40px;color:var(--muted)">🙂</span>'}</div>`; return; }
   document.querySelectorAll('#who button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.who===who)));
   if(view==='session' && cur) return renderSession();
   if(who==='school') return renderSchool();
@@ -174,6 +181,11 @@ function renderHome(){
     ${ss.slice(0,30).map(s=>`<tr><td>${esc(s.date)}</td><td>${s.by==='school'?'المدرسة':'البيت'}</td><td>${s.week||''}</td><td class="res">${s.by==='school'?'—':score(s)+(s.done?'':' (لم تكتمل)')}</td><td class="muted">${esc((s.note||s.hard||'').slice(0,60))}</td></tr>`).join('')}</table>` : '<p class="muted">لا توجد جلسات بعد.</p>'}
   </div>
   <div class="card">
+    <h2>شاشة جواد</h2>
+    <p class="muted">افتحي هذا الرابط على جهاز ثاني قدام جواد (آيباد أو جوال). يشوف البطاقة بس، وأنتِ تسجلين من جوالك بدون ما يشوف صح أو خطأ.</p>
+    <div class="row"><input readonly id="childUrl" value="${esc(location.href.split('#')[0])}#child"><button class="btn" id="copyChild">نسخ</button></div>
+  </div>
+  <div class="card">
     <h2>قواعد سريعة</h2>
     <ul class="muted">
       <li>بعد العصر أو أول المغرب، ٢٠ دقيقة، والجوال برا الغرفة.</li>
@@ -184,6 +196,7 @@ function renderHome(){
     </ul>
   </div>`;
   $('#main').querySelectorAll('.chip').forEach(c => c.onclick = () => stage(w.cards, +c.dataset.i));
+  $('#copyChild').onclick = () => { const i=$('#childUrl'); i.select(); try{navigator.clipboard.writeText(i.value);}catch(e){} $('#copyChild').textContent='تم ✓'; };
   $('#startBtn').onclick = () => startSession('home', open);
   $('#nextW').onclick = () => { if(!m && !confirmInline('nextW')) return; save('plan/state', {...state(), week: w.n+1}); render(); };
   $('#prevW').onclick = () => { save('plan/state', {...state(), week: w.n-1}); render(); };
@@ -219,7 +232,7 @@ function renderSession(){
       <div class="dots">${p.map((x,i)=>`<i class="${x.r} ${i===pIdx?'cur':''}"></i>`).join('')}</div>
       <div class="big" id="pc" style="cursor:pointer">${esc(it.item)}</div>
       <div class="row"><button class="btn ok grow" data-r="ok">قرأها صح ✓</button><button class="btn no grow" data-r="no">خطأ / ما عرف ✗</button></div>
-      <p class="muted" style="text-align:center">${p.filter(x=>x.r).length===4?'النتيجة: '+score(s):'اضغطي البطاقة لعرضها بملء الشاشة'}</p>`;
+      <p class="muted" style="text-align:center">اضغطي البطاقة لعرضها بملء الشاشة. النتيجة تظهر في الختام.</p>`;
   } else if(step===1){
     body = `<h2>٢. التعليم (٧ دقائق)</h2><p>${esc(w.teach)}</p><div class="note good">هنا المساعدة مسموحة.</div>
       <div class="chips">${w.cards.map((c,i)=>`<span class="chip" data-i="${i}">${esc(c)}</span>`).join('')}</div>
@@ -246,6 +259,7 @@ function renderSession(){
 
   const q = s2 => $('#main').querySelector(s2);
   if(step===0){
+    live(s.probe[pIdx].item);
     q('#pc').onclick = () => stage([s.probe[pIdx].item]);
     $('#main').querySelectorAll('[data-r]').forEach(b => b.onclick = () => {
       upd(d => { d.probe[pIdx].r = b.dataset.r; });
@@ -304,7 +318,7 @@ client.onUpdate(api.records.all, {}, rows => {
   const editing = document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
   rows.forEach(r => { if(r.path.startsWith('plan/') && !dirty.has(r.path)) recs[r.path] = r.data; });
   if(!dirty.size) setSave('ok');
-  if(first || !editing){ first = false; render(); }
+  if(CHILD || first || !editing){ first = false; render(); }
 });
 }
 </script>
