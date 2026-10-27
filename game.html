@@ -97,6 +97,7 @@ async function choose(i, btn){
     const cb = document.querySelector(`.opt[data-i="${ci}"]`);
     cb.classList.add('show'); $('#msg').textContent = 'اسمع مرة ثانية، هذي هي';
     await play(g.cur.item);
+    if(g.tries >= 2){ g.n++; setTimeout(next, 700); return; }
     setTimeout(() => { cb.classList.remove('show'); $('#msg').textContent = 'جرّب تضغطها'; g.locked = false; }, 300);
   }
 }
