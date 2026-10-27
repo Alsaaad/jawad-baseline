@@ -109,7 +109,7 @@ function endGame(){
 function saveLog(){
   if(!put) return;
   const path = 'plan/g-' + day().replace(/-/g,'');
-  const prev = recs[path] || {date: day(), plays: []};
+  const prev = (recs[path] && recs[path].plays) ? recs[path] : {date: day(), plays: []};
   const known = new Set(prev.plays.map(p => p.at));
   const data = {date: day(), week: weekN(), plays: prev.plays.concat(g.log.filter(p => !known.has(p.at)))};
   recs[path] = data; put(path, data).catch(()=>{});
